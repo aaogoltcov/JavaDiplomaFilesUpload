@@ -6,11 +6,6 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import static io.restassured.RestAssured.given;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,10 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -31,8 +24,6 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import netology.javadiplomafilesupload.files.repository.FileEntity;
 import netology.javadiplomafilesupload.files.repository.FileRepository;
-import netology.javadiplomafilesupload.users.repository.Role;
-import netology.javadiplomafilesupload.users.repository.UserEntity;
 import netology.javadiplomafilesupload.users.repository.UserRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

@@ -15,16 +15,14 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import netology.javadiplomafilesupload.users.repository.Role;
-import netology.javadiplomafilesupload.users.repository.UserEntity;
-import netology.javadiplomafilesupload.users.repository.UserRepository;
-
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 public class FileRepositoryTest {
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:14-alpine");
+    @Autowired
+    private FileRepository fileRepository;
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -32,9 +30,6 @@ public class FileRepositoryTest {
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
     }
-
-    @Autowired
-    private FileRepository fileRepository;
 
     @BeforeEach
     void setUp() {
