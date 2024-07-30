@@ -1,0 +1,24 @@
+version: "develop"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      - DATASOURCE_USERNAME=postgresql
+      - DATASOURCE_PASSWORD=postgresql
+      - DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgresql
+      - TOKEN_SECRET=53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A75327855
+  postgres:
+    image: postgres:16.2
+    environment:
+      POSTGRES_DB: "postgresql"
+      POSTGRES_USER: "postgresql"
+      POSTGRES_PASSWORD: "postgresql"
+    ports:
+      - "5432:5432"
