@@ -10,14 +10,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import netology.javadiplomafilesupload.files.dto.FileUpdate;
 import netology.javadiplomafilesupload.files.exception.FileErrors;
 import netology.javadiplomafilesupload.files.exception.FileSaveException;
 import netology.javadiplomafilesupload.files.repository.FileEntity;
 import netology.javadiplomafilesupload.files.repository.FileRepository;
+import netology.javadiplomafilesupload.log.LogMarker;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FileService {
     @Autowired
     private FileRepository fileRepository;
@@ -40,6 +43,8 @@ public class FileService {
             file.setSize(fileData.getSize());
             fileRepository.save(file);
         } catch (Exception e) {
+            log.warn(LogMarker.CREATE, "Failed to save file", e);
+
             throw new FileSaveException(FileErrors.FILE_NOT_STORED, e);
         }
     }
@@ -48,6 +53,8 @@ public class FileService {
         Optional<FileEntity> findFile = fileRepository.getFirstByFileName(fileName);
 
         if (findFile.isEmpty()) {
+            log.warn(LogMarker.UPDATE, "File with filename {} not found", fileName);
+
             throw new FileNotFoundException(FileErrors.FILE_NOT_FOUND);
         }
 
@@ -62,6 +69,8 @@ public class FileService {
         Optional<FileEntity> findFile = fileRepository.getFirstByFileName(fileName);
 
         if (findFile.isEmpty()) {
+            log.warn(LogMarker.DELETE, "File with filename {} not found", fileName);
+
             throw new FileNotFoundException(FileErrors.FILE_NOT_FOUND);
         }
 

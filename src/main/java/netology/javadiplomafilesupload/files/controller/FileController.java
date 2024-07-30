@@ -17,14 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import netology.javadiplomafilesupload.files.dto.FileResponse;
 import netology.javadiplomafilesupload.files.dto.FileUpdate;
 import netology.javadiplomafilesupload.files.exception.FileErrors;
 import netology.javadiplomafilesupload.files.repository.FileEntity;
 import netology.javadiplomafilesupload.files.service.FileService;
+import netology.javadiplomafilesupload.log.LogMarker;
 
 @RestController
 @RequestMapping("/")
+@Slf4j
 public class FileController {
     @Autowired
     private FileService fileService;
@@ -41,6 +44,8 @@ public class FileController {
             return fileResponse;
         }).toList();
 
+        log.info(LogMarker.READ, "Get files with limit {}", limit);
+
         return new ResponseEntity<>(files, HttpStatus.OK);
     }
 
@@ -48,12 +53,16 @@ public class FileController {
     public ResponseEntity<FileEntity> getFileByFileName(@Valid @RequestParam("filename") String fileName) throws FileNotFoundException {
         FileEntity file = fileService.getFileByFileName(fileName).orElseThrow(() -> new FileNotFoundException(FileErrors.FILE_NOT_FOUND));
 
+        log.info(LogMarker.READ, "Get file by file name {}", fileName);
+
         return new ResponseEntity<>(file, HttpStatus.OK);
     }
 
     @DeleteMapping("file")
     public ResponseEntity<HttpStatus> deleteFileByFileName(@Valid @RequestParam("filename") String fileName) throws FileNotFoundException {
         fileService.deleteFile(fileName);
+
+        log.info(LogMarker.DELETE, "Delete file by file name {}", fileName);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -65,6 +74,8 @@ public class FileController {
     ) {
         fileService.uploadFile(fileName, fileData);
 
+        log.info(LogMarker.CREATE, "Upload file with file name {}", fileName);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -74,6 +85,8 @@ public class FileController {
             @RequestBody FileUpdate file
     ) throws FileNotFoundException {
         fileService.updateFileName(fileName, file);
+
+        log.info(LogMarker.UPDATE, "Update file by file name {}", fileName);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
