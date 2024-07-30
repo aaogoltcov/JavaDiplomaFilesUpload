@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.Valid;
 import netology.javadiplomafilesupload.files.dto.FileResponse;
 import netology.javadiplomafilesupload.files.dto.FileUpdate;
+import netology.javadiplomafilesupload.files.exception.FileErrors;
 import netology.javadiplomafilesupload.files.repository.FileEntity;
 import netology.javadiplomafilesupload.files.service.FileService;
 
@@ -30,14 +31,22 @@ public class FileController {
 
     @GetMapping("list")
     public ResponseEntity<List<FileResponse>> getFilesWithLimit(@Valid int limit) {
-        List<FileResponse> files = fileService.getFilesWithLimit(limit);
+        List<FileResponse> files = fileService.getFilesWithLimit(limit).stream().map(file -> {
+            var fileResponse = new FileResponse();
+
+            fileResponse.setFileName(file.getFileName());
+            fileResponse.setEditedAt(file.getEditedAt());
+            fileResponse.setSize(file.getSize());
+
+            return fileResponse;
+        }).toList();
 
         return new ResponseEntity<>(files, HttpStatus.OK);
     }
 
     @GetMapping("file")
     public ResponseEntity<FileEntity> getFileByFileName(@Valid @RequestParam("filename") String fileName) throws FileNotFoundException {
-        FileEntity file = fileService.getFileByFileName(fileName);
+        FileEntity file = fileService.getFileByFileName(fileName).orElseThrow(() -> new FileNotFoundException(FileErrors.FILE_NOT_FOUND));
 
         return new ResponseEntity<>(file, HttpStatus.OK);
     }
